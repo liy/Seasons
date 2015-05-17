@@ -44,6 +44,8 @@ ASeasonsCharacter::ASeasonsCharacter(const FObjectInitializer& ObjectInitializer
 
 void ASeasonsCharacter::Tick(float delta)
 {
+	Super::Tick(delta);
+
 	const FRotator currentRotator = CameraBoom->GetComponentRotation();
 	FRotator targetRotator = FRotator(currentRotator.Pitch, TargetYaw, currentRotator.Roll);
 	// Only do interpolation when difference it big enough 

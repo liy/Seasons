@@ -10,6 +10,9 @@ ASeasonsPlayerController::ASeasonsPlayerController(const FObjectInitializer& Obj
 {
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Crosshairs;
+	bEnableClickEvents = true;
+	bEnableTouchEvents = true;
+	bEnableMouseOverEvents = true;
 }
 
 void ASeasonsPlayerController::PlayerTick(float DeltaTime)
