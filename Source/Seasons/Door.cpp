@@ -43,7 +43,7 @@ void ADoor::Tick( float DeltaTime )
 
 void ADoor::OnTimelineUpdate_Implementation(float Value)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTimelineUpdate: timeline: %f  value:%f"), Timeline.GetPlaybackPosition(), Value));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTimelineUpdate: timeline: %f  value:%f"), Timeline.GetPlaybackPosition(), Value));
 	SetActorRelativeRotation(FRotator(0.f, Value, 0.f));
 }
 
