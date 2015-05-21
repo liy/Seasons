@@ -14,6 +14,7 @@ AInteractiveActor::AInteractiveActor()
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
 	Mesh->AttachTo(RootComponent);
 
+
 	//Mesh->OnClicked.AddDynamic(this, &AInteractiveActor::Onclick);
 	OnClicked.AddDynamic(this, &AInteractiveActor::ClickHandler);
 }
@@ -22,7 +23,8 @@ AInteractiveActor::AInteractiveActor()
 void AInteractiveActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	EnableInput(GetWorld()->GetFirstPlayerController());
 }
 
 // Called every frame
