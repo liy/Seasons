@@ -20,9 +20,27 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
-	UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	UShapeComponent* Trigger;
 
-	void ClickHandler();
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interaction", meta = (FriendlyName = "OnPerformAction"))
+	void ReceiveOnPerformAction(UPrimitiveComponent* TouchedComponent);
+	// Have to add UFUNCTION() to make sure addDynamic() delegate work
+	UFUNCTION()
+	virtual void OnPerformAction(UPrimitiveComponent* TouchedComponent);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interaction", meta = (FriendlyName = "OnBeginOverlap"))
+	void ReceiveOnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	// Have to add UFUNCTION() to make sure addDynamic() delegate work
+	UFUNCTION()
+	virtual void OnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Interaction", meta = (FriendlyName = "OnEndOverlap"))
+	void ReceiveOnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	// Have to add UFUNCTION() to make sure addDynamic() delegate work
+	UFUNCTION()
+	virtual void OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+protected:
+	bool CanPerformAction;
 };

@@ -5,6 +5,7 @@
 #include "Components/SceneComponent.h"
 #include "InteractiveComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPerformActionDelegate, UPrimitiveComponent*, TouchedComponent);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SEASONS_API UInteractiveComponent : public USceneComponent
@@ -20,22 +21,24 @@ public:
 	
 	// Called every frame
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction")
-	bool CanPerformAction;
 		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	UShapeComponent* Trigger;
+	UBoxComponent* Trigger;
 
-	UFUNCTION(BlueprintNativeEvent, Category="Interaction")
-	void OnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	void OnBeginOverlap_Implementation(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnPerformAction"))
+	FOnPerformActionDelegate OnPerformActionDelegate;
+	// Have to add UFUNCTION() to make sure addDynamic() delegate work
+	UFUNCTION()
+	virtual void OnPerformAction(UPrimitiveComponent* TouchedComponent);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Interaction")
-	void OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	void OnEndOverlap_Implementation(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	// Have to add UFUNCTION() to make sure addDynamic() delegate work
+	UFUNCTION()
+	virtual void OnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Interaction")
-	void OnPerformAction();
-	void OnPerformAction_Implementation();
+	// Have to add UFUNCTION() to make sure addDynamic() delegate work
+	UFUNCTION()
+	virtual void OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+protected:
+	bool CanPerformAction;
 };

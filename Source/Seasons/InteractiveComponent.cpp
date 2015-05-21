@@ -16,9 +16,13 @@ UInteractiveComponent::UInteractiveComponent()
 
 	//Trigger = CreateOptionalDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
+	Cast<UBoxComponent>(Trigger)->SetBoxExtent(FVector(50.f, 50.f, 50.f));
+	Trigger->AttachTo(this);
+	Trigger->SetCollisionProfileName(FName("UI"));
+
+	Trigger->OnClicked.AddDynamic(this, &UInteractiveComponent::OnPerformAction);
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &UInteractiveComponent::OnBeginOverlap);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &UInteractiveComponent::OnEndOverlap);
-	Trigger->AttachTo(this);
 }
 
 
@@ -27,8 +31,6 @@ void UInteractiveComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
 
-	// ...
-	
 }
 
 
@@ -40,29 +42,35 @@ void UInteractiveComponent::TickComponent( float DeltaTime, ELevelTick TickType,
 	// ...
 }
 
-void UInteractiveComponent::OnBeginOverlap_Implementation(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void UInteractiveComponent::OnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnBeginOverlap")));
-
 	ASeasonsCharacter* player = Cast<ASeasonsCharacter>(Other);
 	if (player)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnBeginOverlap")));
 		CanPerformAction = true;
 	}
 }
 
-void UInteractiveComponent::OnEndOverlap_Implementation(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void UInteractiveComponent::OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnEndOverlap")));
-
 	ASeasonsCharacter* player = Cast<ASeasonsCharacter>(Other);
 	if (player)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnEndOverlap")));
 		CanPerformAction = false;
 	}
 }
 
-void UInteractiveComponent::OnPerformAction_Implementation()
+void UInteractiveComponent::OnPerformAction(UPrimitiveComponent* TouchedComponent)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnPerformAction")));
+	if (CanPerformAction)
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnPerformAction")));
+
+		// Notify blueprint related event handlers
+		if (OnPerformActionDelegate.IsBound()){
+			OnPerformActionDelegate.Broadcast(TouchedComponent);
+		}
+	}
 }
