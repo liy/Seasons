@@ -5,11 +5,16 @@
 #include "GameFramework/Actor.h"
 #include "InteractiveActor.generated.h"
 
+
 UCLASS()
 class SEASONS_API AInteractiveActor : public AActor
 {
 	GENERATED_BODY()
 	
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPerformActionDelegate, UPrimitiveComponent*, TouchedComponent);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBeginOverlapDelegate, AActor*, Other);
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEndOverlapDelegate, AActor*, Other);
+
 public:	
 	// Sets default values for this actor's properties
 	AInteractiveActor();
@@ -21,25 +26,31 @@ public:
 	virtual void Tick( float DeltaSeconds ) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	UShapeComponent* Trigger;
+	class UStaticMeshComponent* Mesh;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interaction", meta = (FriendlyName = "OnPerformAction"))
-	void ReceiveOnPerformAction(UPrimitiveComponent* TouchedComponent);
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	class UShapeComponent* Trigger;
+
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnPerformAction"))
+	FOnPerformActionDelegate OnPerformAction;
+
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnBeginOverlap"))
+	FOnBeginOverlapDelegate OnBeginOverlapDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnEndOverlap"))
+	FOnEndOverlapDelegate OnEndOverlapDelegate;
+
 	// Have to add UFUNCTION() to make sure addDynamic() delegate work
 	UFUNCTION()
-	virtual void OnPerformAction(UPrimitiveComponent* TouchedComponent);
+	virtual void OnTriggerClicked(UPrimitiveComponent* TouchedComponent);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interaction", meta = (FriendlyName = "OnBeginOverlap"))
-	void ReceiveOnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	// Have to add UFUNCTION() to make sure addDynamic() delegate work
 	UFUNCTION()
-	virtual void OnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	virtual void OnTriggerBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Interaction", meta = (FriendlyName = "OnEndOverlap"))
-	void ReceiveOnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-	// Have to add UFUNCTION() to make sure addDynamic() delegate work
 	UFUNCTION()
-	virtual void OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	virtual void OnTriggerEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	virtual UMeshComponent* GetMesh();
 
 protected:
 	bool CanPerformAction;

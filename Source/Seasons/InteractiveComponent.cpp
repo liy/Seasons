@@ -20,7 +20,7 @@ UInteractiveComponent::UInteractiveComponent()
 	Trigger->AttachTo(this);
 	Trigger->SetCollisionProfileName(FName("UI"));
 
-	Trigger->OnClicked.AddDynamic(this, &UInteractiveComponent::OnPerformAction);
+	Trigger->OnClicked.AddDynamic(this, &UInteractiveComponent::OnClicked);
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &UInteractiveComponent::OnBeginOverlap);
 	Trigger->OnComponentEndOverlap.AddDynamic(this, &UInteractiveComponent::OnEndOverlap);
 }
@@ -30,7 +30,6 @@ UInteractiveComponent::UInteractiveComponent()
 void UInteractiveComponent::InitializeComponent()
 {
 	Super::InitializeComponent();
-
 }
 
 
@@ -49,6 +48,12 @@ void UInteractiveComponent::OnBeginOverlap(AActor* Other, UPrimitiveComponent* O
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnBeginOverlap")));
 		CanPerformAction = true;
+
+		// Notify blueprint related event handlers
+		if (OnBeginOverlapDelegate.IsBound())
+		{
+			OnBeginOverlapDelegate.Broadcast(Other);
+		}
 	}
 }
 
@@ -59,18 +64,25 @@ void UInteractiveComponent::OnEndOverlap(AActor* Other, UPrimitiveComponent* Oth
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnEndOverlap")));
 		CanPerformAction = false;
+
+		// Notify blueprint related event handlers
+		if (OnEndOverlapDelegate.IsBound())
+		{
+			OnEndOverlapDelegate.Broadcast(Other);
+		}
 	}
 }
 
-void UInteractiveComponent::OnPerformAction(UPrimitiveComponent* TouchedComponent)
+void UInteractiveComponent::OnClicked(UPrimitiveComponent* TouchedComponent)
 {
 	if (CanPerformAction)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnPerformAction")));
 
 		// Notify blueprint related event handlers
-		if (OnPerformActionDelegate.IsBound()){
-			OnPerformActionDelegate.Broadcast(TouchedComponent);
+		if (OnPerformAction.IsBound())
+		{
+			OnPerformAction.Broadcast(TouchedComponent);
 		}
 	}
 }

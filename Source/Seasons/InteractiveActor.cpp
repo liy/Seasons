@@ -13,14 +13,17 @@ AInteractiveActor::AInteractiveActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
-	Trigger = CreateOptionalDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
-	Cast<UBoxComponent>(Trigger)->SetBoxExtent(FVector(50.f, 50.f, 50.f));
-	Trigger->AttachTo(RootComponent);
-	Trigger->SetCollisionProfileName(FName("UI"));
+	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	Mesh->AttachTo(RootComponent);
 
-	Trigger->OnClicked.AddDynamic(this, &AInteractiveActor::OnPerformAction);
-	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AInteractiveActor::OnBeginOverlap);
-	Trigger->OnComponentEndOverlap.AddDynamic(this, &AInteractiveActor::OnEndOverlap);
+	Trigger = CreateOptionalDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
+	Cast<UBoxComponent>(Trigger)->SetBoxExtent(FVector(80.f, 110.f, 60.f));
+	Trigger->SetCollisionProfileName(FName("UI"));
+	Trigger->AttachTo(RootComponent);
+
+	Trigger->OnClicked.AddDynamic(this, &AInteractiveActor::OnTriggerClicked);
+	Trigger->OnComponentBeginOverlap.AddDynamic(this, &AInteractiveActor::OnTriggerBeginOverlap);
+	Trigger->OnComponentEndOverlap.AddDynamic(this, &AInteractiveActor::OnTriggerEndOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -37,7 +40,7 @@ void AInteractiveActor::Tick( float DeltaTime )
 
 }
 
-void AInteractiveActor::OnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AInteractiveActor::OnTriggerBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ASeasonsCharacter* player = Cast<ASeasonsCharacter>(Other);
 	if (player)
@@ -45,11 +48,15 @@ void AInteractiveActor::OnBeginOverlap(AActor* Other, UPrimitiveComponent* Other
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnBeginOverlap")));
 		CanPerformAction = true;
 
-		ReceiveOnBeginOverlap(Other, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+		// Notify blueprint related event handlers
+		if (OnBeginOverlapDelegate.IsBound())
+		{
+			OnBeginOverlapDelegate.Broadcast(Other);
+		}
 	}
 }
 
-void AInteractiveActor::OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AInteractiveActor::OnTriggerEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	ASeasonsCharacter* player = Cast<ASeasonsCharacter>(Other);
 	if (player)
@@ -57,15 +64,24 @@ void AInteractiveActor::OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherCo
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnEndOverlap")));
 		CanPerformAction = false;
 
-		ReceiveOnEndOverlap(Other, OtherComp, OtherBodyIndex);
+		// Notify blueprint related event handlers
+		if (OnEndOverlapDelegate.IsBound())
+		{
+			OnEndOverlapDelegate.Broadcast(Other);
+		}
 	}
 }
 
-void AInteractiveActor::OnPerformAction(UPrimitiveComponent* TouchedComponent)
+void AInteractiveActor::OnTriggerClicked(UPrimitiveComponent* TouchedComponent)
 {
 	if (CanPerformAction)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnPerformAction")));
-		ReceiveOnPerformAction(TouchedComponent);
+
+		// Notify blueprint related event handlers
+		if (OnPerformAction.IsBound())
+		{
+			OnPerformAction.Broadcast(TouchedComponent);
+		}
 	}
 }

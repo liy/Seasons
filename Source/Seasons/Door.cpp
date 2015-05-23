@@ -26,7 +26,7 @@ void ADoor::BeginPlay()
 		FOnTimelineFloat onTimelineFunc{};
 		onTimelineFunc.BindUFunction(this, "OnTimelineUpdate");
 		// Curve is dynamically assigned, so timeline has to be initialized in BeginPlay()
-		Timeline.AddInterpFloat(Curve, onTimelineFunc, FName(TEXT("DoorTimeline")));
+		Timeline.AddInterpFloat(Curve, onTimelineFunc, FName("DoorTimeline"));
 	}
 }
 

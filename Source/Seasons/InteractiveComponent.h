@@ -6,6 +6,8 @@
 #include "InteractiveComponent.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPerformActionDelegate, UPrimitiveComponent*, TouchedComponent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBeginOverlapDelegate, AActor*, Other);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEndOverlapDelegate, AActor*, Other);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class SEASONS_API UInteractiveComponent : public USceneComponent
@@ -23,19 +25,24 @@ public:
 	virtual void TickComponent( float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction ) override;
 		
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	UBoxComponent* Trigger;
+	class UBoxComponent* Trigger;
 
 	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnPerformAction"))
-	FOnPerformActionDelegate OnPerformActionDelegate;
-	// Have to add UFUNCTION() to make sure addDynamic() delegate work
-	UFUNCTION()
-	virtual void OnPerformAction(UPrimitiveComponent* TouchedComponent);
+	FOnPerformActionDelegate OnPerformAction;
+
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnBeginOverlap"))
+	FOnBeginOverlapDelegate OnBeginOverlapDelegate;
+
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnEndOverlap"))
+	FOnEndOverlapDelegate OnEndOverlapDelegate;
 
 	// Have to add UFUNCTION() to make sure addDynamic() delegate work
+	UFUNCTION()
+	virtual void OnClicked(UPrimitiveComponent* TouchedComponent);
+
 	UFUNCTION()
 	virtual void OnBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
-	// Have to add UFUNCTION() to make sure addDynamic() delegate work
 	UFUNCTION()
 	virtual void OnEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
