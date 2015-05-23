@@ -2,12 +2,12 @@
 
 #pragma once
 
-#include "GameFramework/Actor.h"
+#include "InteractiveActor.h"
 #include "Components/TimelineComponent.h"
 #include "Door.generated.h"
 
 UCLASS()
-class SEASONS_API ADoor : public AActor
+class SEASONS_API ADoor : public AInteractiveActor
 {
 	GENERATED_BODY()
 	
@@ -25,25 +25,41 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool bIsLocked;
 
-	UFUNCTION(BlueprintCallable, Category = "Door")
-	void ToggleDoor();
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
+	bool bAutoClose;
 
+	// TODO: may be make sure nav mesh auto allow this door?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
+	bool bAutoOpen;
+
+	// Door openning and closing timeline update
 	UFUNCTION(BlueprintNativeEvent, Category = "Door")
 	void OnTimelineUpdate(float Value);
-	void OnTimelineUpdate_Implementation(float Value);
+	virtual void OnTimelineUpdate_Implementation(float Value);
+
+	void Open(bool useTransition);
+
+	void Close(bool useTransition);
+
+	void ToggleDoor(bool useTransition);
 
 protected:
-
 	UPROPERTY(EditInstanceOnly, Category = "Door", DisplayName = "Timeline Curve")
 	UCurveFloat* Curve;
 
+	virtual void OnTriggerClicked(UPrimitiveComponent* TouchedComponent) override;
+
+	// For auto enter feature
+	virtual void OnTriggerBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
+
+	// For auto close feature
+	virtual void OnTriggerEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
 private:
 	FTimeline Timeline;
 
 	void TickTimeline();
 
-	bool bFlipflop;
-
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door", meta = (AllowPrivateAccess = "true"))
+	bool bClosed;
 };

@@ -5,16 +5,15 @@
 #include "GameFramework/Actor.h"
 #include "InteractiveActor.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFireTriggerDelegate, UPrimitiveComponent*, TouchedComponent);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEnterTriggerDelegate, UPrimitiveComponent*, Component);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnLeaveTriggerDelegate, UPrimitiveComponent*, Component);
 
 UCLASS()
 class SEASONS_API AInteractiveActor : public AActor
 {
 	GENERATED_BODY()
 	
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPerformActionDelegate, UPrimitiveComponent*, TouchedComponent);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnBeginOverlapDelegate, AActor*, Other);
-	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnEndOverlapDelegate, AActor*, Other);
-
 public:	
 	// Sets default values for this actor's properties
 	AInteractiveActor();
@@ -25,22 +24,28 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
-	class UStaticMeshComponent* Mesh;
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnFireTrigger"))
+	FOnFireTriggerDelegate OnFireTrigger;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Interaction")
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnEnterTrigger"))
+	FOnEnterTriggerDelegate OnEnterTrigger;
+
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnLeaveTrigger"))
+	FOnLeaveTriggerDelegate OnLeaveTrigger;
+
+	class UMeshComponent* GetMesh() const;
+
+	class UShapeComponent* GetTrigger() const;
+
+protected:
+	bool CanFireTrigger;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction")
+	class UMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
 	class UShapeComponent* Trigger;
 
-	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnPerformAction"))
-	FOnPerformActionDelegate OnPerformAction;
-
-	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnBeginOverlap"))
-	FOnBeginOverlapDelegate OnBeginOverlapDelegate;
-
-	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnEndOverlap"))
-	FOnEndOverlapDelegate OnEndOverlapDelegate;
-
-	// Have to add UFUNCTION() to make sure addDynamic() delegate work
 	UFUNCTION()
 	virtual void OnTriggerClicked(UPrimitiveComponent* TouchedComponent);
 
@@ -49,9 +54,4 @@ public:
 
 	UFUNCTION()
 	virtual void OnTriggerEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	virtual UMeshComponent* GetMesh();
-
-protected:
-	bool CanPerformAction;
 };

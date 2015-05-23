@@ -2,14 +2,14 @@
 
 #pragma once
 
-#include "InteractiveComponent.h"
+#include "SilhouetteComponent.h"
 #include "PickupComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class SEASONS_API UPickupComponent : public UInteractiveComponent
+class SEASONS_API UPickupComponent : public USilhouetteComponent
 {
 	GENERATED_BODY()
 	

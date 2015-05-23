@@ -11,8 +11,10 @@ ADoor::ADoor()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	bFlipflop = true;
+	bClosed = true;
 	bIsLocked = false;
+	bAutoClose = false;
+	bAutoOpen = false;
 }
 
 // Called when the game starts or when spawned
@@ -28,6 +30,10 @@ void ADoor::BeginPlay()
 		// Curve is dynamically assigned, so timeline has to be initialized in BeginPlay()
 		Timeline.AddInterpFloat(Curve, onTimelineFunc, FName("DoorTimeline"));
 	}
+
+	if (!bClosed) {
+		Open(true);
+	}
 }
 
 // Called every frame
@@ -35,32 +41,77 @@ void ADoor::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
-	if (Timeline.IsPlaying())
-	{
+	if (Timeline.IsPlaying()) {
 		Timeline.TickTimeline(DeltaTime);
 	}
 }
 
 void ADoor::OnTimelineUpdate_Implementation(float Value)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTimelineUpdate: timeline: %f  value:%f"), Timeline.GetPlaybackPosition(), Value));
-	SetActorRelativeRotation(FRotator(0.f, Value, 0.f));
+	//SetActorRelativeRotation(FRotator(0.f, Value, 0.f));
+	GetMesh()->SetRelativeRotation(FRotator(0.f, Value, 0.f));
 }
 
-void ADoor::ToggleDoor()
+void ADoor::Open(bool useTransition = true)
 {
-	if (bFlipflop)
-	{
-		if (bIsLocked)
-		{
-			return;
-		}
+	if (bIsLocked) {
+		return;
+	}
 
+	if (useTransition) {
 		Timeline.Play();
 	}
-	else
-	{
+	else{
+		Timeline.SetNewTime(Timeline.GetTimelineLength());
+	}
+
+	bClosed = false;
+}
+
+void ADoor::Close(bool useTransition = true)
+{
+	if (useTransition) {
 		Timeline.Reverse();
 	}
-	bFlipflop = !bFlipflop;
+	else{
+		Timeline.SetNewTime(0.f);
+	}
+	bClosed = true;
+}
+
+void ADoor::ToggleDoor(bool useTransition = true)
+{
+	if (bClosed) {
+		Open(useTransition);
+	}
+	else {
+		Close(useTransition);
+	}
+}
+
+void ADoor::OnTriggerClicked(UPrimitiveComponent* TouchedComponent)
+{
+	Super::OnTriggerClicked(TouchedComponent);
+
+	if (CanFireTrigger) {
+		ToggleDoor();
+	}
+}
+
+void ADoor::OnTriggerBeginOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::OnTriggerBeginOverlap(Other, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
+	if (bAutoOpen) {
+		Open();
+	}
+}
+
+void ADoor::OnTriggerEndOverlap(AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	Super::OnTriggerEndOverlap(Other, OtherComp, OtherBodyIndex);
+
+	if (bAutoClose) {
+		Close();
+	}
 }

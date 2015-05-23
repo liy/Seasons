@@ -45,14 +45,15 @@ void AInteractiveActor::OnTriggerBeginOverlap(AActor* Other, UPrimitiveComponent
 	ASeasonsCharacter* player = Cast<ASeasonsCharacter>(Other);
 	if (player)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnBeginOverlap")));
-		CanPerformAction = true;
+		CanFireTrigger = true;
 
 		// Notify blueprint related event handlers
-		if (OnBeginOverlapDelegate.IsBound())
+		if (OnEnterTrigger.IsBound())
 		{
-			OnBeginOverlapDelegate.Broadcast(Other);
+			OnEnterTrigger.Broadcast(OtherComp);
 		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerBeginOverlap")));
 	}
 }
 
@@ -61,27 +62,36 @@ void AInteractiveActor::OnTriggerEndOverlap(AActor* Other, UPrimitiveComponent* 
 	ASeasonsCharacter* player = Cast<ASeasonsCharacter>(Other);
 	if (player)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnEndOverlap")));
-		CanPerformAction = false;
+		CanFireTrigger = false;
 
-		// Notify blueprint related event handlers
-		if (OnEndOverlapDelegate.IsBound())
+		if (OnLeaveTrigger.IsBound())
 		{
-			OnEndOverlapDelegate.Broadcast(Other);
+			OnLeaveTrigger.Broadcast(OtherComp);
 		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerEndOverlap")));
 	}
 }
 
 void AInteractiveActor::OnTriggerClicked(UPrimitiveComponent* TouchedComponent)
 {
-	if (CanPerformAction)
+	if (CanFireTrigger)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnPerformAction")));
-
-		// Notify blueprint related event handlers
-		if (OnPerformAction.IsBound())
+		if (OnFireTrigger.IsBound())
 		{
-			OnPerformAction.Broadcast(TouchedComponent);
+			OnFireTrigger.Broadcast(TouchedComponent);
 		}
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerClicked")));
 	}
+}
+
+UMeshComponent* AInteractiveActor::GetMesh() const
+{
+	return Mesh;
+}
+
+UShapeComponent* AInteractiveActor::GetTrigger() const
+{
+	return Trigger;
 }
