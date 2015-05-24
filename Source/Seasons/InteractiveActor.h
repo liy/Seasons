@@ -24,6 +24,9 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
+	class USceneComponent* MeshContainer;
+
 	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnFireTrigger"))
 	FOnFireTriggerDelegate OnFireTrigger;
 
@@ -33,15 +36,12 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnLeaveTrigger"))
 	FOnLeaveTriggerDelegate OnLeaveTrigger;
 
-	class UMeshComponent* GetMesh() const;
+	TArray<class UMeshComponent*> GetMeshes() const;
 
 	class UShapeComponent* GetTrigger() const;
 
 protected:
 	bool CanFireTrigger;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interaction")
-	class UMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
 	class UShapeComponent* Trigger;

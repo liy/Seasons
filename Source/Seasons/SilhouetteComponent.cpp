@@ -15,7 +15,6 @@ USilhouetteComponent::USilhouetteComponent()
 	PrimaryComponentTick.bCanEverTick = true;
 }
 
-
 // Called when the game starts
 void USilhouetteComponent::InitializeComponent()
 {
@@ -44,8 +43,10 @@ void USilhouetteComponent::Show()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("ShowOutline")));
 
 	if (InteractiveActor){
-		InteractiveActor->GetMesh()->bRenderCustomDepth = true;
-		InteractiveActor->GetMesh()->MarkRenderStateDirty();
+		for (UMeshComponent* mesh : InteractiveActor->GetMeshes()){
+			mesh->bRenderCustomDepth = true;
+			mesh->MarkRenderStateDirty();
+		}
 	}
 }
 
@@ -54,8 +55,10 @@ void USilhouetteComponent::Hide()
 	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("HideOutline")));
 
 	if (InteractiveActor){
-		InteractiveActor->GetMesh()->bRenderCustomDepth = false;
-		InteractiveActor->GetMesh()->MarkRenderStateDirty();
+		for (UMeshComponent* mesh : InteractiveActor->GetMeshes()){
+			mesh->bRenderCustomDepth = false;
+			mesh->MarkRenderStateDirty();
+		}
 	}
 }
 

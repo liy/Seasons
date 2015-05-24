@@ -13,8 +13,8 @@ AInteractiveActor::AInteractiveActor()
 
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	Mesh->AttachTo(RootComponent);
+	MeshContainer = CreateDefaultSubobject<USceneComponent>(TEXT("RootMesh"));
+	MeshContainer->AttachTo(RootComponent);
 
 	Trigger = CreateOptionalDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
 	Cast<UBoxComponent>(Trigger)->SetBoxExtent(FVector(80.f, 110.f, 60.f));
@@ -86,9 +86,14 @@ void AInteractiveActor::OnTriggerClicked(UPrimitiveComponent* TouchedComponent)
 	}
 }
 
-UMeshComponent* AInteractiveActor::GetMesh() const
+TArray<UMeshComponent*> AInteractiveActor::GetMeshes() const
 {
-	return Mesh;
+	TArray<UActorComponent*> components = GetComponentsByClass(UMeshComponent::StaticClass());
+	TArray<UMeshComponent*> meshes;
+	for (UActorComponent* component : components){
+		meshes.Add(Cast<UMeshComponent>(component));
+	}
+	return meshes;
 }
 
 UShapeComponent* AInteractiveActor::GetTrigger() const

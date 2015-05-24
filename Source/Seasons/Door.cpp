@@ -49,7 +49,7 @@ void ADoor::Tick( float DeltaTime )
 void ADoor::OnTimelineUpdate_Implementation(float Value)
 {
 	//SetActorRelativeRotation(FRotator(0.f, Value, 0.f));
-	GetMesh()->SetRelativeRotation(FRotator(0.f, Value, 0.f));
+	MeshContainer->SetRelativeRotation(FRotator(0.f, Value, 0.f));
 }
 
 void ADoor::Open(bool useTransition = true)
