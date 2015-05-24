@@ -1,6 +1,7 @@
 // Copyright 1998-2015 Epic Games, Inc. All Rights Reserved.
 #pragma once
 #include "GameFramework/PlayerController.h"
+#include "PickupType.h"
 #include "SeasonsPlayerController.generated.h"
 
 UCLASS()
@@ -10,6 +11,10 @@ class ASeasonsPlayerController : public APlayerController
 
 public:
 	ASeasonsPlayerController(const FObjectInitializer& ObjectInitializer);
+
+	void SetSelectedPickup(EPickupType type);
+
+	EPickupType GetSelectedPickup();
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */

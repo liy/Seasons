@@ -40,7 +40,7 @@ void USilhouetteComponent::TickComponent( float DeltaTime, ELevelTick TickType, 
 
 void USilhouetteComponent::Show()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("ShowOutline")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("ShowOutline")));
 
 	if (InteractiveActor){
 		for (UMeshComponent* mesh : InteractiveActor->GetMeshes()){
@@ -52,7 +52,7 @@ void USilhouetteComponent::Show()
 
 void USilhouetteComponent::Hide()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("HideOutline")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("HideOutline")));
 
 	if (InteractiveActor){
 		for (UMeshComponent* mesh : InteractiveActor->GetMeshes()){

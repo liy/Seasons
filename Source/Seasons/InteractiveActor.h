@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "PickupType.h"
 #include "InteractiveActor.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFireTriggerDelegate, UPrimitiveComponent*, TouchedComponent);
@@ -35,6 +36,10 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnLeaveTrigger"))
 	FOnLeaveTriggerDelegate OnLeaveTrigger;
+	
+	// The target pickups that can interact with this actor
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
+	TArray<EPickupType> TargetPickupType;
 
 	TArray<class UMeshComponent*> GetMeshes() const;
 

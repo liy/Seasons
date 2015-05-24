@@ -2,6 +2,7 @@
 
 #include "Seasons.h"
 #include "SeasonsCharacter.h"
+#include "InteractiveActor.h"
 
 ASeasonsCharacter::ASeasonsCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)

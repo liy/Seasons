@@ -17,7 +17,7 @@ AInteractiveActor::AInteractiveActor()
 	MeshContainer->AttachTo(RootComponent);
 
 	Trigger = CreateOptionalDefaultSubobject<UBoxComponent>(TEXT("Trigger"));
-	Cast<UBoxComponent>(Trigger)->SetBoxExtent(FVector(80.f, 110.f, 60.f));
+	Cast<UBoxComponent>(Trigger)->InitBoxExtent(FVector(80.f, 110.f, 60.f));
 	Trigger->SetCollisionProfileName(FName("UI"));
 	Trigger->AttachTo(RootComponent);
 
@@ -53,7 +53,7 @@ void AInteractiveActor::OnTriggerBeginOverlap(AActor* Other, UPrimitiveComponent
 			OnEnterTrigger.Broadcast(OtherComp);
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerBeginOverlap")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerBeginOverlap")));
 	}
 }
 
@@ -69,7 +69,7 @@ void AInteractiveActor::OnTriggerEndOverlap(AActor* Other, UPrimitiveComponent* 
 			OnLeaveTrigger.Broadcast(OtherComp);
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerEndOverlap")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerEndOverlap")));
 	}
 }
 
@@ -82,7 +82,7 @@ void AInteractiveActor::OnTriggerClicked(UPrimitiveComponent* TouchedComponent)
 			OnFireTrigger.Broadcast(TouchedComponent);
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerClicked")));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("OnTriggerClicked")));
 	}
 }
 

@@ -3,6 +3,8 @@
 #include "GameFramework/Character.h"
 #include "SeasonsCharacter.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPickupDelegate, class UPickupComponent*, pickupComponent);
+
 UCLASS(Blueprintable)
 class ASeasonsCharacter : public ACharacter
 {
@@ -26,6 +28,9 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	virtual void Tick(float delta) override;
+
+	UPROPERTY(BlueprintAssignable, Category = "_Pickup")
+	FOnPickupDelegate OnPickup;
 
 	void CameraRotateLeft();
 	void CameraRotateRight();

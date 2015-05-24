@@ -4,6 +4,7 @@
 #include "SeasonsGameMode.h"
 #include "SeasonsPlayerController.h"
 #include "SeasonsCharacter.h"
+#include "GameFramework/HUD.h"
 
 ASeasonsGameMode::ASeasonsGameMode(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -15,5 +16,11 @@ ASeasonsGameMode::ASeasonsGameMode(const FObjectInitializer& ObjectInitializer) 
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<AHUD> GameHUDClass(TEXT("/Game/TopDown/UI/GameHUD"));
+	if (GameHUDClass.Class != NULL)
+	{
+		HUDClass = GameHUDClass.Class;
 	}
 }

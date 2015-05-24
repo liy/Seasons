@@ -41,8 +41,6 @@ protected:
 	// Hide silhouette
 	void Hide();
 
-	class AInteractiveActor* GetInteractiveOwner() const;
-
 	class AInteractiveActor* InteractiveActor;
 
 private:
