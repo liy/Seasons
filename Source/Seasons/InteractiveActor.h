@@ -37,13 +37,24 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnLeaveTrigger"))
 	FOnLeaveTriggerDelegate OnLeaveTrigger;
 	
-	// The target pickups that can interact with this actor
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
-	TArray<EPickupType> TargetPickupType;
+	// Indicate all the pickups that can interact with this actor
+	// TODO: maybe override it in construct blueprint ensure the uniqueness?
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
+	TArray<EPickupType> AffectedByPickupTypes;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup")
+	//TMap<EPickupType, AInteractiveActor*> TSetTest;
+
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
+	void InteractWith(EPickupType pickupType);
+
+	UFUNCTION(BlueprintCallable, Category = "Pickup")
+	class ASeasonsPlayerController* GetController() const;
 
 	TArray<class UMeshComponent*> GetMeshes() const;
 
 	class UShapeComponent* GetTrigger() const;
+
 
 protected:
 	bool CanFireTrigger;

@@ -5,6 +5,8 @@
 UENUM(BlueprintType)
 enum class EPickupType : uint8
 {
+	None,
+
 	// Level 1
 	Key,
 	Apple,

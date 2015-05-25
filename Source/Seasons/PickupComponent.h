@@ -27,8 +27,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "_PickUp")
 	class UTexture2D* Texture;
 
+	// The type of the the pickup
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "_Pickup")
-	EPickupType PickupType;
+	EPickupType Type;
 
 protected:
 	class AInteractiveActor* InteractiveActor;

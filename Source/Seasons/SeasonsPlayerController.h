@@ -12,13 +12,18 @@ class ASeasonsPlayerController : public APlayerController
 public:
 	ASeasonsPlayerController(const FObjectInitializer& ObjectInitializer);
 
+	UFUNCTION(BlueprintCallable, Category = "Pickup")
 	void SetSelectedPickup(EPickupType type);
 
+	UFUNCTION(BlueprintCallable, Category="Pickup")
 	EPickupType GetSelectedPickup();
 
 protected:
 	/** True if the controlled character should navigate to the mouse cursor. */
 	uint32 bMoveToMouseCursor : 1;
+
+	// Indicate the selecte pickup
+	EPickupType SelectedPickupType;
 
 	// Begin PlayerController interface
 	virtual void PlayerTick(float DeltaTime) override;

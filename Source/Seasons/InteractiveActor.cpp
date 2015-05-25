@@ -3,6 +3,7 @@
 #include "Seasons.h"
 #include "InteractiveActor.h"
 #include "SeasonsCharacter.h"
+#include "SeasonsPlayerController.h"
 #include "Engine.h"
 
 // Sets default values
@@ -99,4 +100,9 @@ TArray<UMeshComponent*> AInteractiveActor::GetMeshes() const
 UShapeComponent* AInteractiveActor::GetTrigger() const
 {
 	return Trigger;
+}
+
+ASeasonsPlayerController* AInteractiveActor::GetController() const
+{
+	return Cast<ASeasonsPlayerController>(GetWorld()->GetFirstPlayerController());
 }
