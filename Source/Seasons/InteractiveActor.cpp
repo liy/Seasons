@@ -87,6 +87,13 @@ void AInteractiveActor::OnTriggerClicked(UPrimitiveComponent* TouchedComponent)
 	}
 }
 
+bool AInteractiveActor::InteractWith(EPickupType pickupType)
+{
+	// To be implementted in blueprint.
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("InteractWith")));
+	return OnInteract(pickupType);
+}
+
 TArray<UMeshComponent*> AInteractiveActor::GetMeshes() const
 {
 	TArray<UActorComponent*> components = GetComponentsByClass(UMeshComponent::StaticClass());

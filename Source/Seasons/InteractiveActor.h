@@ -45,8 +45,11 @@ public:
 	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup")
 	//TMap<EPickupType, AInteractiveActor*> TSetTest;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup")
-	void InteractWith(EPickupType pickupType);
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup", meta = (FriendlyName = "OnInteract"))
+	bool OnInteract(EPickupType pickupType);
+
+	UFUNCTION(BlueprintCallable, Category = "Pickup")
+	bool InteractWith(EPickupType pickupType);
 
 	UFUNCTION(BlueprintCallable, Category = "Pickup")
 	class ASeasonsPlayerController* GetController() const;
