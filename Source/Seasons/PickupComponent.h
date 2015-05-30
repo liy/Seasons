@@ -7,7 +7,7 @@
 #include "PickupComponent.generated.h"
 
 /**
- * 
+ * Handle the pickup triggering, and providing pick information, e.g. pick type.
  */
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class SEASONS_API UPickupComponent : public UActorComponent

@@ -13,8 +13,6 @@ ASeasonsPlayerController::ASeasonsPlayerController(const FObjectInitializer& Obj
 	bEnableClickEvents = true;
 	bEnableTouchEvents = true;
 	bEnableMouseOverEvents = true;
-
-	SelectedPickupType = EPickupType::None;
 }
 
 void ASeasonsPlayerController::PlayerTick(float DeltaTime)
@@ -115,14 +113,4 @@ void ASeasonsPlayerController::CameraRotateRight()
 {
 	ASeasonsCharacter* player = Cast<ASeasonsCharacter>(GetCharacter());
 	player->CameraRotateRight();
-}
-
-void ASeasonsPlayerController::SetSelectedPickup(EPickupType type = EPickupType::None)
-{
-	SelectedPickupType = type;
-}
-
-EPickupType ASeasonsPlayerController::GetSelectedPickup()
-{
-	return SelectedPickupType;
 }

@@ -38,12 +38,12 @@ void UPickupComponent::OnPickup(UPrimitiveComponent* TouchedComponent)
 {
 	AInteractiveActor* actor = Cast<AInteractiveActor>(TouchedComponent->GetOwner());
 	if (actor){
+		// TODO: maybe player controller to broadcast would be more suitable?
 		// Make Character broadcast the OnPickup events
 		ASeasonsCharacter* player = Cast<ASeasonsCharacter>(GetWorld()->GetFirstPlayerController()->GetCharacter());
 		if (player && player->OnPickup.IsBound()){
+			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("OnPickup C++")));
 			player->OnPickup.Broadcast(this);
 		}
-
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Green, FString::Printf(TEXT("OnPickup")));
 	}
 }

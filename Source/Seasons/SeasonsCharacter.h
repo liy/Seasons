@@ -29,7 +29,7 @@ public:
 
 	virtual void Tick(float delta) override;
 
-	UPROPERTY(BlueprintAssignable, Category = "_Pickup")
+	UPROPERTY(BlueprintAssignable, Category = "Pickup")
 	FOnPickupDelegate OnPickup;
 
 	void CameraRotateLeft();

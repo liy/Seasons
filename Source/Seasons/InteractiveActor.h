@@ -36,20 +36,16 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnLeaveTrigger"))
 	FOnLeaveTriggerDelegate OnLeaveTrigger;
-	
-	// Indicate all the pickups that can interact with this actor
-	// TODO: maybe override it in construct blueprint ensure the uniqueness?
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
-	TArray<EPickupType> AffectedByPickupTypes;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup")
-	//TMap<EPickupType, AInteractiveActor*> TSetTest;
-
+	// Can be implemented in blueprint, but this function is not exposed to other blueprint. A separated BlueprintCallable
+	// function is defined in C++ for exposing to global blueprints.
 	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup", meta = (FriendlyName = "OnInteract"))
 	bool OnInteract(EPickupType pickupType);
 
+	// This function expose the ability OnInteract function to global blueprint. It simply calls OnInteract function.
+	// But, you can always override it in C++ sub class.
 	UFUNCTION(BlueprintCallable, Category = "Pickup")
-	bool InteractWith(EPickupType pickupType);
+	virtual bool InteractWith(EPickupType pickupType);
 
 	UFUNCTION(BlueprintCallable, Category = "Pickup")
 	class ASeasonsPlayerController* GetController() const;
@@ -57,7 +53,6 @@ public:
 	TArray<class UMeshComponent*> GetMeshes() const;
 
 	class UShapeComponent* GetTrigger() const;
-
 
 protected:
 	bool CanFireTrigger;
