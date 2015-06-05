@@ -6,6 +6,9 @@
 #include "Components/TimelineComponent.h"
 #include "Door.generated.h"
 
+/*
+ * Generic Door class
+ */
 UCLASS()
 class SEASONS_API ADoor : public AInteractiveActor
 {
@@ -28,7 +31,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool bAutoClose;
 
-	// TODO: may be make sure nav mesh auto allow this door?
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool bAutoOpen;
 

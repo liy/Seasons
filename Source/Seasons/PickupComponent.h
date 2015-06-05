@@ -24,16 +24,17 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "_PickUp")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Pickup")
 	class UTexture2D* Texture;
 
 	// The type of the the pickup
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "_Pickup")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Pickup")
 	EPickupType Type;
 
 protected:
 	class AInteractiveActor* InteractiveActor;
 
+	// Bind to tirgger overlap event, and broadcast the OnPickup events
 	// Make sure the listener function is marked as UFUNCTION
 	UFUNCTION()
 	void OnPickup(class UPrimitiveComponent* TouchedComponent);
