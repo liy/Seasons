@@ -28,18 +28,18 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Interaction")
 	class USceneComponent* MeshContainer;
 
-	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnFireTrigger"))
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (DisplayName = "OnFireTrigger"))
 	FOnFireTriggerDelegate OnFireTrigger;
 
-	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnEnterTrigger"))
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (DisplayName = "OnEnterTrigger"))
 	FOnEnterTriggerDelegate OnEnterTrigger;
 
-	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (FriendlyName = "OnLeaveTrigger"))
+	UPROPERTY(BlueprintAssignable, Category = "Interaction", meta = (DisplayName = "OnLeaveTrigger"))
 	FOnLeaveTriggerDelegate OnLeaveTrigger;
 
 	// Can be implemented in blueprint, but this function is not exposed to other blueprint. A separated BlueprintCallable
 	// function is defined in C++ for exposing to global blueprints.
-	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup", meta = (FriendlyName = "OnInteract"))
+	UFUNCTION(BlueprintImplementableEvent, Category = "Pickup", meta = (DisplayName = "OnInteract"))
 	bool OnInteract(EPickupType pickupType);
 
 	// This function expose the ability OnInteract function to global blueprint. It simply calls OnInteract function.
